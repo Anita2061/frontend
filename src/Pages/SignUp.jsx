@@ -17,17 +17,14 @@ const SignUp = () => {
     setError('');
     setLoading(true);
     try {
-      const res = await api.post('/accounts/signup/', { username, email, password });
-      login(res.data.token, res.data.user);
-      navigate('/products');
-    } catch (err) {
-      const msg = err?.response?.data?.detail || 
-                  (err?.response?.data && typeof err.response.data === 'object'
-                    ? Object.values(err.response.data).flat().join(' ')
-                    : 'Signup failed');
-      setError(msg);
-      alert(msg); // Help user see exactly why it failed
-    } finally {
+  const response = await api.post('/api/register/', formData);
+  alert("Success!");
+} catch (error) {
+  // Instead of alert(error), use this:
+  console.error("Full Error Object:", error);
+  alert(error.response?.data?.message || "Something went wrong");
+}
+     finally {
       setLoading(false);
     }
   };
