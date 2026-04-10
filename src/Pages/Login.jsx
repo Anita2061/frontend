@@ -1,42 +1,27 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
-
 const Login = () => {
-  const host = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const handleCheckout = async () => {
-  const token = localStorage.getItem('access_token'); 
-  const res = await fetch(`${host}/api/login/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` 
-    },
-    body: JSON.stringify(yourOrderData)
-  });
-  
-  const data = await res.json();
-  console.log(data);
-};
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const res = await api.post(`${host}/accounts/login/`, { email, password });
+      // api baseURL is '/api', Vite proxy forwards /api → http://127.0.0.1:8000
+      const res = await api.post('/accounts/login/', { email, password });
       login(res.data.token, res.data.user);
       navigate('/products');
     } catch (err) {
-      setError(err?.response?.data?.detail || 'Login failed');
+      setError(err?.response?.data?.detail || 'Login failed. Please check your email and password.');
     } finally {
       setLoading(false);
     }
@@ -56,6 +41,7 @@ const Login = () => {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition"
             />
           </div>
@@ -67,6 +53,7 @@ const Login = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition"
             />
           </div>
@@ -86,13 +73,13 @@ const Login = () => {
           ) : null}
 
           <button
+            type="submit"
             disabled={loading}
             className="w-full bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 rounded-lg font-bold text-lg hover:bg-orange-700 transition shadow-md"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-    
 
         <p className="text-center text-gray-600 mt-8">
           Don't have an account?
@@ -100,7 +87,6 @@ const Login = () => {
             Sign up
           </Link>
         </p>
-
       </div>
     </div>
   );

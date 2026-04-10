@@ -3,9 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { api } from '../lib/api';
-
-// 1. Dummy Data Array (25 Makeup Items)
-
+import { dummyMakeupData } from '../data/Product';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -17,6 +15,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // api baseURL is '/api', Vite proxy forwards /api → http://127.0.0.1:8000
         const res = await api.get('/accounts/products/');
         if (res.data && res.data.length > 0) {
           setProducts(res.data);
@@ -49,36 +48,36 @@ const Products = () => {
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((products) => (
-            <Link key={products.id} to={`/products/${products.id}`} className="block no-underline group">
+          {products.map((product) => (
+            <Link key={product._id || product.id} to={`/products/${product._id || product.id}`} className="block no-underline group">
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
-                
+
                 {/* Image Container */}
                 <div className="aspect-square bg-gray-100 overflow-hidden">
-                  <img 
-                    src={products.image} 
-                    alt={products.title}
+                  <img
+                    src={product.image}
+                    alt={product.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
 
                 {/* Content */}
-                <div className="p-4 flex flex-col cd">
+                <div className="p-4 flex flex-col">
                   <span className="text-[10px] font-bold text-orange-600 uppercase mb-1">
-                    {products.category}
+                    {product.category}
                   </span>
-                  
+
                   <h3 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">
-                    {products.title}
+                    {product.title}
                   </h3>
-                  
+
                   <p className="text-xs text-gray-500 line-clamp-2 mb-4 h-8">
-                    {products.description}
+                    {product.description}
                   </p>
-                  
+
                   <div className="mt-auto flex items-center justify-between">
                     <span className="text-lg font-bold text-gray-900">
-                      Rs.{products.price.toFixed(2)}
+                      Rs.{Number(product.price).toFixed(2)}
                     </span>
                     <button
                       onClick={async (e) => {
@@ -89,10 +88,10 @@ const Products = () => {
                           return;
                         }
                         await addToCart({
-                          productId: products.id,
-                          title: products.title,
-                          price: products.price,
-                          image: products.image,
+                          productId: product._id || product.id,
+                          title: product.title,
+                          price: product.price,
+                          image: product.image,
                           qty: 1,
                         });
                       }}
