@@ -17,7 +17,6 @@ const SignUp = () => {
     setError('');
     setLoading(true);
     try {
-<<<<<<< HEAD
       const response = await api.post('/accounts/signup/', { username, email, password });
       login(response.data.token, response.data.user);
       navigate('/');
@@ -25,16 +24,6 @@ const SignUp = () => {
       console.error("Full Error Object:", err);
       setError(err.response?.data?.detail || err.response?.data?.message || "Something went wrong");
     } finally {
-=======
-  const response = await api.post('/api/register/', formData);
-  alert("Success!");
-} catch (error) {
-  // Instead of alert(error), use this:
-  console.error("Full Error Object:", error);
-  alert(error.response?.data?.message || "Something went wrong");
-}
-     finally {
->>>>>>> 0ade13d930a10823aa15e8300847af908b190491
       setLoading(false);
     }
   };
