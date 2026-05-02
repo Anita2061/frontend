@@ -12,7 +12,11 @@ const Orders = () => {
         const fetchOrders = async () => {
             if (!user) return;
             try {
+<<<<<<< HEAD
                 const res = await api.get('/accounts/orders/');
+=======
+                const res = await api.get(`${host}/accounts/orders/`);
+>>>>>>> 0ade13d930a10823aa15e8300847af908b190491
                 setOrders(res.data);
             } catch (error) {
                 console.error("Failed to fetch orders:", error);
